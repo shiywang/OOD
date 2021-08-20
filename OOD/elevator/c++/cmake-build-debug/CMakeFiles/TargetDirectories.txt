@@ -1,0 +1,3 @@
+/Users/shiywang/OOD/OOD/elevator/c++/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/shiywang/OOD/OOD/elevator/c++/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/shiywang/OOD/OOD/elevator/c++/cmake-build-debug/CMakeFiles/c__.dir
