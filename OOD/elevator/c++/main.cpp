@@ -48,23 +48,59 @@ class Elevator {
   }
 
   void sendUpRequest(Request *upRequest) {
-    
+    if(upRequest->location == Location::OUTSIDE) {
+      upQueue.push(Request(upRequest->currentFloor, upRequest->currentFloor, Direction::_UP, Location::OUTSIDE));
+      std::cout << "Append up request going to floor " <<  + upRequest->currentFloor <<  "." << std::endl;
+    }
+    upQueue.push(*upRequest);
+    std::cout << "Append up request going to floor " << upRequest->desiredFloor << "." << std::endl;
   }
 
   void sendDownRequest(Request *downRequest) {
-
+	if(downRequest->location == Location::OUTSIDE) {
+	  downQueue.push(Request(downRequest->currentFloor, downRequest->currentFloor, Direction::_DOWN, Location::OUTSIDE));
+	  std::cout << "Append down request going to floor " <<  + downRequest->currentFloor <<  "." << std::endl;
+	}
+	downQueue.push(*downRequest);
+	std::cout << "Append down request going to floor " << downRequest->desiredFloor << "." << std::endl;
   }
   void run() {
-
+    if(!this->upQueue.empty() || !this->downQueue.empty()) {
+      processRequest();
+    }
+    std::cout << "finish all request." << std::endl;
+    this->direction = Direction::_IDLE;
   }
   void processRequest() {
-
+	if(this->direction == Direction::_UP || this->direction == Direction::_IDLE) {
+	  processUpRequest();
+	  processDownRequest();
+	} else {
+	  processDownRequest();
+	  processUpRequest();
+	}
   }
   void processUpRequest() {
-
+	while(!this->upQueue.empty()) {
+	  Request up = this->upQueue.top(); this->upQueue.pop();
+	  this->currentFloor = up.desiredFloor;
+	}
+	if(!this->downQueue.empty()) {
+		this->direction = Direction::_DOWN;
+	} else {
+	  this->direction = Direction::_IDLE;
+	}
   }
   void processDownRequest() {
-
+	while(!this->downQueue.empty()) {
+	  Request down = this->downQueue.top(); this->downQueue.pop();
+	  this->currentFloor = down.desiredFloor;
+	}
+	if(!this->upQueue.empty()) {
+	  this->direction = Direction::_UP;
+	} else {
+	  this->direction = Direction::_IDLE;
+	}
   }
 };
 
@@ -76,7 +112,7 @@ int main() {
 
   Request *downRequest1 = new Request(elevator->currentFloor, 1, Direction::_DOWN, Location::INSIDE);
   Request *downRequest2 = new Request(elevator->currentFloor, 2, Direction::_DOWN, Location::INSIDE);
-  Request *downRequest3 = new Request(elevator->currentFloor, 0, Direction::_DOWN, Location::OUTSIDE);
+  Request *downRequest3 = new Request(4, 0, Direction::_DOWN, Location::OUTSIDE);
 
   elevator->sendUpRequest(upRequest1);
   elevator->sendUpRequest(upRequest2);
